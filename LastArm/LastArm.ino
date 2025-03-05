@@ -1,33 +1,48 @@
-#include <ESP32Servo.h>
-Servo myservo;
-int posVal;
-int shoulderPin = 12;//brown
-int FwdPin = 26,BwdPin=32;//right (Green-light blue)
-int ActTime = 1000; 
-int MaxSpd = 250; 
+#include <Servo.h>  // Standard Servo library for Arduino Uno
 
+Servo myservo;
+int posVal=120;
+int shoulderPin = 9;  // Use a PWM pin for the servo (9, 10, or 11 on Uno)
+int FwdPin = 6, BwdPin = 5;  // Use PWM pins for the motor
+int ActTime = 1000;
+int MaxSpd = 255;  // 0-255 for PWM control
 
 void setup() {
-  myservo.attach(12);
-
+  myservo.attach(shoulderPin);  // Attach servo to pin 9
+  pinMode(FwdPin, OUTPUT);  // Set motor control pins as output
+  pinMode(BwdPin, OUTPUT);
+  Serial.begin(9600);  // Start serial communication for debugging
 }
 
 void loop() {
-  for (posVal = 120; posVal <= 180; posVal += 1) { 
-myservo.write(posVal); 
-delay(50);
-}
 
- analogWrite(FwdPin,MaxSpd); 
-  delay(ActTime);
-  analogWrite(FwdPin,0);
-  analogWrite(BwdPin,MaxSpd); 
-   delay(ActTime);
-  analogWrite(BwdPin,0);
-  
-for (posVal = 180; posVal >= 120; posVal -= 1) { 
-myservo.write(posVal); 
-delay(50); 
+   // Forward motor movement
+  analogWrite(FwdPin, MaxSpd);  // Set motor speed to max (255)
+  delay(ActTime);  // Run motor for ActTime (1000 ms)
+  analogWrite(FwdPin, 0);  // Stop motor
 
+  // Move servo from 120° to 180°
+  for (posVal = 120; posVal <= 180; posVal++) {
+    myservo.write(posVal);  // Move servo to position
+    delay(100);  // Longer delay to ensure smooth movement and allow servo time to adjust
+    Serial.print("Moving to: ");
+    Serial.println(posVal);  // Debugging: Track servo position
+  }
 
+ 
+  // Reverse motor movement
+  analogWrite(BwdPin, MaxSpd);  // Set motor speed to max (255)
+  delay(ActTime);  // Run motor for ActTime (1000 ms)
+  analogWrite(BwdPin, 0);  // Stop motor
+
+  // Move servo from 180° back to 120°
+  for (posVal = 180; posVal >= 120; posVal--) {
+    myservo.write(posVal);  // Move servo to position
+    delay(100);  // Longer delay to ensure smooth movement
+    Serial.print("Moving back to: ");
+    Serial.println(posVal);  // Debugging: Track servo position
+  }
+
+  // Optional: Add a delay to avoid continuously looping
+  delay(2000);  // Add a small delay before repeating the loop
 }

@@ -50,8 +50,6 @@ delay(1000);
 
     analogWrite(FwdPin,MaxSpd);  //Send instructions to Forward motor pin
     analogWrite(fwdPin1,MaxSpd1);
-    delay(ActTime);
-    analogWrite(FwdPin,0);
     analogWrite(fwdPin1,0);
    // DirFlag = !DirFlag; //Toggle Direction flag
 
@@ -63,7 +61,9 @@ delay(1000);
     analogWrite(bwdPin1,0);
    // DirFlag =! DirFlag; //Toggle Direction flag*/
    // delay(2000);*/
-//myservo.write(180);
+//myservo.write(180);delay(ActTime);
+    analogWrite(FwdPin,0);
+    
 for (posVal = 180; posVal >= 120; posVal -= 1) { // goes from 180 degrees to 0 degrees
 myservo.write(posVal); // tell servo to go to position in variable
 delay(50); // waits 15ms for the servo to reach the position
